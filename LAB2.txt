@@ -1,0 +1,58 @@
+#include <linux/module.h>
+#include <linux/fs.h>
+#include <linux/uaccess.h>
+
+
+static int major;
+
+static ssize_t lab2_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
+{
+	return 0;
+}
+static ssize_t lab2_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
+{
+	return 0;
+}
+
+int lab2_open(struct inode *in, struct file *fl)
+{
+	printk("Just open");
+	return 0;
+}
+
+int lab2_release(struct inode *in, struct file *fl)
+{
+	printk("Just close");
+	return 0;
+}
+
+static struct file_operations fops =
+{
+	.read = lab2_read,
+	.write = lab2_write,
+	.open = lab2_open,
+	.release - lab2_release
+};
+
+static int __init modinit(void)
+{
+	major = register_chrdev(0, "lab2_device", &fops);
+	if (major < 0)
+	{
+		printk("failed %d\n", major);
+		return major;
+	}
+	printk("/dev/lab2_device assigned major %d\n", major);
+	return 0;
+}
+
+static void __exit modexit(void)
+{
+	unregister_chrdev(major, "register_chrdev");
+}
+
+module_init(modinit);
+module_exit(modexit);
+MODULE_AUTHOR("Vlasov and Dzubko");
+MODULE_DESCRIPTION("register_chrdev test");
+MODULE_LICENSE("GPL");
